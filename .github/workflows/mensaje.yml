@@ -1,0 +1,21 @@
+name: Recibir mensajes
+
+on:
+  repository_dispatch:
+    types: [nuevo_mensaje]
+
+jobs:
+  crear_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Crear issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const mensaje = context.payload.client_payload.mensaje;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "📩 Nuevo mensaje anónimo",
+              body: mensaje
+            });
